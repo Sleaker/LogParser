@@ -18,6 +18,7 @@ public class LogMovedWrong extends JavaPlugin {
 	private String plugName;
 	private static Logger log = Logger.getLogger("Minecraft");
 	private Queue<String> logQueue = new ConcurrentLinkedQueue<String>();
+	protected static final String logDir = "log-archive" + File.separator;
 	LogThread logThread = new LogThread(logQueue);
 	MoveWrongLogHandler logHandler;
 
@@ -26,6 +27,8 @@ public class LogMovedWrong extends JavaPlugin {
 		//Shutdown our logging thread
 		try {
 			logThread.writeQueue();
+			logThread.run = false;
+			logThread.notify();
 			logThread.join();
 		} catch (InterruptedException e) {
 			//don't care if we can't stop
@@ -42,7 +45,7 @@ public class LogMovedWrong extends JavaPlugin {
 	public void onEnable() {
 		plugName = "[" + this.getDescription().getName() + "]";
 
-		File baseDir = new File("log-archive/");
+		File baseDir = new File(logDir);
 		if (!baseDir.exists()) {
 			log.info(plugName + " - Logging directory not found, creating at <server_dir>/log-archive");
 			baseDir.mkdir();
@@ -76,7 +79,7 @@ public class LogMovedWrong extends JavaPlugin {
 		}
 		
 		private String getDateTime() {
-			DateFormat dateFormat = new SimpleDateFormat("[dd-MM-yy | hh-mm-ss ]");
+			DateFormat dateFormat = new SimpleDateFormat("[dd-MM-yy | hh:mm:ss]");
 			return dateFormat.format(new Date());
 		}
 	}

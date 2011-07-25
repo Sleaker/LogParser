@@ -14,6 +14,7 @@ public class LogThread extends Thread {
 	private static final String baseLogName = "-moved_wrongly.log";
 	Queue<String> logQueue;
 	PrintWriter logWriter;
+    boolean run = true;
 	
 	public LogThread(Queue<String> logQueue) {
 		this.logQueue = logQueue;
@@ -22,9 +23,9 @@ public class LogThread extends Thread {
 	@Override
 	public void run() {
 		//initial wait
-		while (true) {
+		while (run) {
 			try {
-				Thread.sleep(300000);
+				this.wait(300000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -37,7 +38,7 @@ public class LogThread extends Thread {
 	}
 	
 	protected void writeQueue() {
-		File logFile = new File(getDate() + baseLogName);
+		File logFile = new File(LogMovedWrong.logDir + getDate() + baseLogName);
 		try {
 			if (!logFile.exists()) {
 				logFile.createNewFile();
