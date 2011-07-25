@@ -2,6 +2,9 @@ package com.sleaker.logmovedwrong;
 
 import java.io.File;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Handler;
@@ -19,10 +22,11 @@ public class LogMovedWrong extends JavaPlugin {
 	MoveWrongLogHandler logHandler;
 
 	@Override
-	public void onDisable() {
+	public void onDisable() {	    
 		//Shutdown our logging thread
 		try {
-			logThread.shutdown();
+			logThread.writeQueue();
+			logThread.join();
 		} catch (InterruptedException e) {
 			//don't care if we can't stop
 		}
@@ -57,7 +61,7 @@ public class LogMovedWrong extends JavaPlugin {
 		public void publish(LogRecord record) {
 			String testString = record.getMessage();
 			if (testString.contains("moved wrongly") || testString.contains("Got position") || testString.contains("Expected"))
-				logQueue.add(testString);
+				logQueue.add(getDateTime() + "  " + testString);
 
 		}
 
@@ -70,6 +74,10 @@ public class LogMovedWrong extends JavaPlugin {
 		public void close() throws SecurityException {
 
 		}
-
+		
+		private String getDateTime() {
+			DateFormat dateFormat = new SimpleDateFormat("[dd-MM-yy | hh-mm-ss ]");
+			return dateFormat.format(new Date());
+		}
 	}
 }

@@ -2,4 +2,4 @@ name: LogMovedWrong
 main: com.sleaker.logmovedwrong.LogMovedWrong
 author: Sleaker
 version: 1.0-b000
-description: Routes moved wrongly messages to a seperate file for easier parsing.
+description: Routes moved wrong messages to a seperate file for easier parsing.
