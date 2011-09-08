@@ -18,7 +18,7 @@
 	<delete failonerror="false">
 		<fileset dir="bin" includes="**/*" />
 	</delete>
-	<delete file="LogMovedWrong.jar" />
+	<delete file="LogParser.jar" />
 	<mkdir dir="bin"/>
 	<echo>Retreiving Libraries</echo>
         <mkdir dir="lib" />
@@ -36,7 +36,7 @@
   
   <target name="compress" description="Compression target">
   		<echo>Compressing</echo>
-        <jar jarfile="LogMovedWrong.jar" basedir="bin" includes="com/**/*, plugin.yml">
+        <jar jarfile="LogParser.jar" basedir="bin" includes="com/**/*, plugin.yml">
 		<manifest>
 			<attribute name="Built-By" value="${user.name}" />
 		</manifest>
