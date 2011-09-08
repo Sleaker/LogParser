@@ -1,4 +1,4 @@
-package com.sleaker.logmovedwrong;
+package com.sleaker.logparser;
 
 import java.io.File;
 
@@ -13,10 +13,10 @@ import java.util.logging.Logger;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class LogMovedWrong extends JavaPlugin {
+public class LogParser extends JavaPlugin {
 
 	private String plugName;
-	private static Logger log = Logger.getLogger("Minecraft");
+	public static Logger log = Logger.getLogger("Minecraft");
 	private Queue<String> logQueue = new ConcurrentLinkedQueue<String>();
 	protected static final String logDir = "log-archive" + File.separator;
 	LogThread logThread = new LogThread(logQueue);
@@ -25,15 +25,16 @@ public class LogMovedWrong extends JavaPlugin {
 	@Override
 	public void onDisable() {	    
 		//Shutdown our logging thread
-		try {
-			logThread.writeQueue();
-			logThread.run = false;
-			logThread.notify();
-			logThread.join();
-		} catch (InterruptedException e) {
-			//don't care if we can't stop
+		synchronized(logThread) {
+			try {
+				logThread.writeQueue();
+				logThread.run = false;
+				logThread.notify();
+				logThread.join();
+			} catch (InterruptedException e) {
+				//don't care if we can't stop
+			}
 		}
-
 		//Cleanup our handler
 		log.removeHandler(logHandler);
 		logHandler.close();
@@ -62,10 +63,12 @@ public class LogMovedWrong extends JavaPlugin {
 
 		@Override
 		public void publish(LogRecord record) {
-			String testString = record.getMessage();
-			if (testString.contains("moved wrongly") || testString.contains("Got position") || testString.contains("Expected"))
-				logQueue.add(getDateTime() + "  " + testString);
-
+			String s = record.getMessage();
+			if (s.contains("moved wrongly") || s.contains("logged in with")  || s.contains("lost connection")
+					|| s.contains("Got position") || s.contains("Expected ") || s.contains("used command")) {
+				
+				logQueue.add(getDateTime() + "  " + s);
+			}
 		}
 
 		@Override
@@ -77,9 +80,9 @@ public class LogMovedWrong extends JavaPlugin {
 		public void close() throws SecurityException {
 
 		}
-		
+
 		private String getDateTime() {
-			DateFormat dateFormat = new SimpleDateFormat("[dd-MM-yy | hh:mm:ss]");
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss| ");
 			return dateFormat.format(new Date());
 		}
 	}

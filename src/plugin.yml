@@ -1,5 +1,5 @@
-name: LogMovedWrong
-main: com.sleaker.logmovedwrong.LogMovedWrong
+name: LogParser
+main: com.sleaker.logparser.LogParser
 author: Sleaker
 version: 1.0-b000
 description: Routes moved wrong messages to a seperate file for easier parsing.
