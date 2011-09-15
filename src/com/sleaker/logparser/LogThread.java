@@ -28,7 +28,9 @@ public class LogThread extends Thread {
 		while (run) {
 			try {
 				System.out.println("Running wait in logger thread.");
-				this.wait(60000);
+				synchronized (this) {
+					this.wait(60000);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
